@@ -117,6 +117,7 @@ class genetic_algorithm():
                         B[i]=b[j]
                         break
         return A,B
+    
     def mutation(self,solution):
         ret=solution[:]
         A=random.randint(0,len(ret)-1)
@@ -131,13 +132,21 @@ class genetic_algorithm():
 
 
 
-    def reproduction():
-        pass
+    def reproduction(self,total_population,total_fitness):
+        ret_pop=list()
+        ret_fit=list()
+        for i in range(int(len(total_population)/2)):
+            j=total_fitness.index(min(total_fitness))
+            ret_pop.append(total_population[j][:])
+            ret_fit.append(total_fitness[j])
+            total_fitness.pop(j)
+            total_population.pop(j)
+        return ret_pop,ret_fit
 
 
 #############___________________ ALgorithm parameters ________________############
-population_size=20
-
+population_size=50
+no_of_runs=int(10000/population_size)
 
 #############______________________ problem setup ____________________############
 problem=cities(x,y)
@@ -149,30 +158,21 @@ population=GA.initialise_population(population_size)
 population_fitness=problem.calculate_distance_for_all_population(population)
 # problem.show_graph(2,1,population,population_fitness)
 new_population=list()
-best_distance=min(population_fitness)
-best_solution=population[population_fitness.index(best_distance)][:]
-for i in range(500):
+new_population_fitness=list()
+
+for i in range(no_of_runs):
     for j in range(int(population_size/2)):
         a,b=GA.select_two_parents_basedon_tournament(population_fitness)
         A,B=GA.breed_two_parents(population[a],population[b])
         new_population.append(GA.mutation(A))
         new_population.append(GA.mutation(B))
-    population_fitness=problem.calculate_distance_for_all_population(new_population)
-    population=new_population[:]
-    if min(population_fitness) <best_distance:
-        best_distance=min(population_fitness)
-        best_solution=population[population_fitness.index(best_distance)][:]
-        print("new best distance found is =>",best_distance)
-        print("new best solution is =>",best_solution)
-    # print("iteration number",i)
-    # print(population)
-    
+    new_population_fitness=problem.calculate_distance_for_all_population(new_population)
+    new_population=new_population+population
+    new_population_fitness=new_population_fitness+population_fitness
+    population,population_fitness=GA.reproduction(new_population,new_population_fitness)
     new_population=[]
 
-print("best distance is=>",best_distance)
-print("best soultion is=>",best_solution)
-population[0]=best_solution
-population_fitness[0]=best_distance
-print(len(population))
-problem.show_graph(4,5,population,population_fitness)
+print("best distance is=>",population_fitness[0])
+print("best soultion is=>",population[0])
+problem.show_graph(7,8,population,population_fitness)
 
