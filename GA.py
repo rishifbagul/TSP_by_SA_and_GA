@@ -53,6 +53,19 @@ class cities():
             y=[]
         plt.show()
 
+    def show_single_graph(self,l):
+        x=[]
+        y=[]
+        for i in l:
+            x.append(self.x[i])
+            y.append(self.y[i])
+        x.append(self.x[l[0]])
+        y.append(self.y[l[0]])
+        plt.plot(x, y, color='green', linewidth = 3,
+         marker='o', markerfacecolor='blue', markersize=6)
+        plt.title("best fitness=> "+str(round(self.total_route_distance(l),2)))
+        plt.show()
+
 
 
 class genetic_algorithm():
@@ -132,20 +145,29 @@ class genetic_algorithm():
 
 
 
-    def reproduction(self,total_population,total_fitness):
+    def reproduction(self,total_population,total_fitness,generation_size,percentage_of_selection):
         ret_pop=list()
         ret_fit=list()
-        for i in range(int(len(total_population)/2)):
+        for i in range(int(generation_size*percentage_of_selection)):
             j=total_fitness.index(min(total_fitness))
-            ret_pop.append(total_population[j][:])
-            ret_fit.append(total_fitness[j])
+            if total_population[j] not in ret_pop:
+                ret_pop.append(total_population[j][:])
+                ret_fit.append(total_fitness[j])
             total_fitness.pop(j)
             total_population.pop(j)
+        while len(ret_fit)<generation_size:
+            j=random.randint(0,len(total_fitness)-1)
+            if total_population[j] not in ret_pop:
+                ret_pop.append(total_population[j][:])
+                ret_fit.append(total_fitness[j])
+            total_fitness.pop(j)
+            total_population.pop(j)
+        
         return ret_pop,ret_fit
 
 
 #############___________________ ALgorithm parameters ________________############
-population_size=50
+population_size=30
 no_of_runs=int(10000/population_size)
 
 #############______________________ problem setup ____________________############
@@ -169,10 +191,10 @@ for i in range(no_of_runs):
     new_population_fitness=problem.calculate_distance_for_all_population(new_population)
     new_population=new_population+population
     new_population_fitness=new_population_fitness+population_fitness
-    population,population_fitness=GA.reproduction(new_population,new_population_fitness)
+    population,population_fitness=GA.reproduction(new_population,new_population_fitness,population_size,0.8)
     new_population=[]
 
 print("best distance is=>",population_fitness[0])
 print("best soultion is=>",population[0])
-problem.show_graph(7,8,population,population_fitness)
-
+problem.show_graph(5,6,population,population_fitness)
+problem.show_single_graph(population[0])
