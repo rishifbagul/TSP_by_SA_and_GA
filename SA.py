@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 x=[38.24,39.57,40.56,36.26,33.48,37.56,38.42,37.52,41.23,41.17,36.08,38.47,38.15,37.51,35.49,39.36,38.09,36.09,40.44,40.33,40.37,37.57]
 y=[20.42,26.15,25.32,23.12,10.54,12.19,13.11,20.44,9.1,13.05,-5.21,15.13,15.35,15.17,14.32,19.56,24.36,23,13.57,14.15,14.23,22.56]
 
-initial_temprature=1000
-alpha=0.9991
+initial_temprature=144
+alpha=0.9992
 # x=[1,2,3,1,2,3,4,1]
 # y=[1,1,1,2,2,2,2,4]
 
@@ -31,7 +31,8 @@ class cities():
             total_distance+=self.dist_between_city(route[i],route[i+1])
         total_distance+=self.dist_between_city(route[len(self.x)-1],route[0])
         return total_distance
-    def show_graph(self,l,initial):
+    
+    def show_graph(self,l,cost):
         x=[]
         y=[]
         for i in l:
@@ -39,11 +40,27 @@ class cities():
             y.append(self.y[i])
         x.append(self.x[l[0]])
         y.append(self.y[l[0]])
-        plt.subplot(1,2,initial)
         plt.plot(x, y, color='green', linewidth = 3,
          marker='o', markerfacecolor='blue', markersize=6)
-        if initial==2:
-            plt.show()
+        plt.title("cost="+str(cost))
+        plt.show()
+    
+    def show_graph_full(self,r,c,l,f):
+        x=[]
+        y=[]
+        for j,ele in enumerate(l):
+            for i in ele:
+                x.append(self.x[i])
+                y.append(self.y[i])
+            x.append(self.x[ele[0]])
+            y.append(self.y[ele[0]])
+            plt.subplot(r,c,j+1)
+            plt.plot(x, y, color='green', linewidth = 1,
+            marker='o', markerfacecolor='blue', markersize=5)
+            plt.title(str(j+1)+" => "+str(round(f[j],2)))
+            x=[]
+            y=[]
+        plt.show()
 
     
 
@@ -80,9 +97,9 @@ problem=cities(x,y)
 SA=simulated_anneling(initial_temprature, alpha)
 
 ############____________simulated anneling algorithm as follows_____________##########
+
 solution=list(range(0,len(x)))
 random.shuffle(solution)
-problem.show_graph(solution,1)
 distance=problem.total_route_distance(solution)
 best_solution=solution[:]
 best_distance=distance
@@ -96,9 +113,13 @@ for i in range(10000):
     if (new_distance < best_distance) :
         best_distance=new_distance
         best_solution=new_solution[:]
-        print("new best distance=>",best_distance)
+        #print("new best distance=>",best_distance)
 
 print("best solution is ==>",best_solution)
 print("best distance is ==>",best_distance)
-problem.show_graph(best_solution,2)
+problem.show_graph(best_solution,best_distance)
+
+
+
+
 

@@ -17,11 +17,42 @@ class simulated_anneling():
             return math.exp(energy_diffrence/self.t)
 x=[]
 t=[]
-sa=simulated_anneling(1000,0.9992)
+sa=simulated_anneling(144,0.9970)
 for i in range(10000):
     t.append(sa.calculate_new_t())
     x.append(sa.selection_probability(-10))
-    
+plt.subplot(2,2,1)
 plt.plot(x)
+plt.title("c=0.9970")
+
+x=[]
+t=[]
+sa=simulated_anneling(144,0.9980)
+for i in range(10000):
+    t.append(sa.calculate_new_t())
+    x.append(sa.selection_probability(-10))
+plt.subplot(2,2,2)
+plt.plot(x)
+plt.title("c=0.9980")
+
+x=[]
+t=[]
+sa=simulated_anneling(144,0.9990)
+for i in range(10000):
+    t.append(sa.calculate_new_t())
+    x.append(sa.selection_probability(-10))
+plt.subplot(2,2,3)
+plt.plot(x)
+plt.title("c=0.9990")
+
+x=[]
+t=[]
+sa=simulated_anneling(144,0.9995)
+for i in range(10000):
+    t.append(sa.calculate_new_t())
+    x.append(sa.selection_probability(-50))
+plt.subplot(2,2,4)
+plt.plot(x)
+plt.title("c=0.9995")
 # plt.plot(t)
 plt.show()

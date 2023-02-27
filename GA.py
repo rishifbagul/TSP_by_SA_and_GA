@@ -167,15 +167,17 @@ class genetic_algorithm():
 
 
 #############___________________ ALgorithm parameters ________________############
-population_size=30
+population_size=50
 no_of_runs=int(10000/population_size)
 
 #############______________________ problem setup ____________________############
+
 problem=cities(x,y)
 GA=genetic_algorithm(len(x))
 
-
 #############___________________ Genetic Algorithm Implimentation ________________############
+
+
 population=GA.initialise_population(population_size)
 population_fitness=problem.calculate_distance_for_all_population(population)
 # problem.show_graph(2,1,population,population_fitness)
@@ -188,13 +190,16 @@ for i in range(no_of_runs):
         A,B=GA.breed_two_parents(population[a],population[b])
         new_population.append(GA.mutation(A))
         new_population.append(GA.mutation(B))
+        # new_population.append(A)
+        # new_population.append(B)
     new_population_fitness=problem.calculate_distance_for_all_population(new_population)
     new_population=new_population+population
     new_population_fitness=new_population_fitness+population_fitness
-    population,population_fitness=GA.reproduction(new_population,new_population_fitness,population_size,0.8)
+    population,population_fitness=GA.reproduction(new_population,new_population_fitness,population_size,1)
     new_population=[]
 
 print("best distance is=>",population_fitness[0])
 print("best soultion is=>",population[0])
-problem.show_graph(5,6,population,population_fitness)
+problem.show_graph(5,10,population,population_fitness)
 problem.show_single_graph(population[0])
+
